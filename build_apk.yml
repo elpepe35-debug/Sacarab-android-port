@@ -1,0 +1,27 @@
+name: Build Scarab APK
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codigo
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Instalar SDK Android
+        run: dotnet workload install android
+
+      - name: Fabricar APK
+        run: dotnet publish Scarab/Scarab.csproj -f net8.0-android -c Release
+
+      - name: Subir APK Resultante
+        uses: actions/upload-artifact@v3
+        with:
+          name: Scarab-Android-Instalador
+          path: "**/bin/Release/net8.0-android/publish/*.apk"
+          
